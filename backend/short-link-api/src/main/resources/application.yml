@@ -1,0 +1,52 @@
+server:
+  port: 8001
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/short_link?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: ${DB_PASSWORD}
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+  data:
+    redis:
+      host: 192.168.80.80
+      port: 6379
+      password: ${REDIS_PASSWORD}
+      database: 2
+      lettuce:
+        pool:
+          max-active: 32
+          max-idle: 8
+          min-idle: 2
+  kafka:
+    bootstrap-servers: 192.168.80.80:9092
+    producer:
+      acks: all
+      retries: 3
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+
+# 缓存与布隆过滤器参数（可在 Nacos 动态调整）
+short-link:
+  cache:
+    # 正常缓存基础过期时间（秒）
+    base-expire-seconds: 1800
+    # 随机过期增量（秒），叠加在基础时间上，避免大量 Key 同时过期造成雪崩
+    random-expire-seconds: 600
+    # 空对象缓存时间（秒），拦截布隆过滤器误判
+    empty-cache-seconds: 60
+  bloom:
+    expected-insertions: 1000000
+    false-probability: 0.01
+
+logging:
+  level:
+    com.shortlink.api: info

@@ -1,0 +1,90 @@
+:root {
+  --brand-1: #2563eb;
+  --brand-2: #3b82f6;
+  --brand-3: #60a5fa;
+  --bg-page: #f5f7fb;
+  --text-1: #1f2937;
+  --text-2: #4b5563;
+  --text-3: #9ca3af;
+  --card-radius: 12px;
+  --card-border: 1px solid #eef0f5;
+  --card-shadow: 0 1px 2px rgba(16, 24, 40, 0.04), 0 4px 16px rgba(16, 24, 40, 0.06);
+  --card-shadow-hover: 0 4px 8px rgba(16, 24, 40, 0.06), 0 12px 28px rgba(16, 24, 40, 0.1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+  font-family: Inter, 'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB',
+    'Microsoft YaHei', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  color: var(--text-1);
+  font-feature-settings: 'tnum';
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d3d8e3;
+  border-radius: 6px;
+
+  &:hover {
+    background: #b8c0cf;
+  }
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::selection {
+  background: rgba(59, 130, 246, 0.18);
+}
+
+.page-card {
+  background: #fff;
+  border-radius: var(--card-radius);
+  border: var(--card-border);
+  box-shadow: var(--card-shadow);
+}
+
+/* 路由切换过渡 */
+.fade-slide-enter-active,
+.fade-slide-leave-active {
+  transition: opacity 0.22s ease, transform 0.22s ease;
+}
+
+.fade-slide-enter-from {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.fade-slide-leave-to {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+
+@keyframes float-slow {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate(14px, -18px) scale(1.06);
+  }
+}
+
+.el-dialog.link-dialog {
+  border-radius: 14px;
+}

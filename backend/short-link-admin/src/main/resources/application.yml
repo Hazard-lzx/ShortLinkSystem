@@ -1,0 +1,58 @@
+server:
+  port: 8002
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/short_link?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: ${DB_PASSWORD}
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+  kafka:
+    bootstrap-servers: 192.168.80.80:9092
+    consumer:
+      group-id: short-link-admin-log-group
+      auto-offset-reset: earliest
+      max-poll-records: 200
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    listener:
+      type: batch
+      ack-mode: manual_immediate
+  cloud:
+    sentinel:
+      eager: true
+    openfeign:
+      client:
+        config:
+          default:
+            connect-timeout: 1000
+            read-timeout: 1000
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+
+feign:
+  sentinel:
+    enabled: true
+
+short-link:
+  jwt:
+    secret: ${JWT_SECRET}
+    expire-hour: 72
+
+short-link-admin:
+  flow:
+    stats-qps: 50
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+logging:
+  level:
+    com.shortlink.admin: info

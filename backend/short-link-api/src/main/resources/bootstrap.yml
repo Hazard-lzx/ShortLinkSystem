@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: short-link-api
+  cloud:
+    nacos:
+      # 配置中心：dataId 为 short-link-api.yaml（Nacos 上未创建时使用本地 application.yml 兜底）
+      config:
+        server-addr: 192.168.80.80:8848
+        file-extension: yaml
+        import-check:
+          enabled: false
+      discovery:
+        server-addr: 192.168.80.80:8848

@@ -1,0 +1,55 @@
+server:
+  port: 8000
+
+spring:
+  application:
+    name: short-link-gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.80.80:8848
+    sentinel:
+      eager: true # 服务启动即初始化限流规则，不依赖首次流量触发
+    gateway:
+      # 全局跨域配置，业务服务无需单独处理
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowed-origin-patterns: "*"
+            allowed-methods: "*"
+            allowed-headers: "*"
+            allow-credentials: true
+            max-age: 3600
+      routes:
+        # 管理类请求 → 短链管理服务
+        - id: short-link-admin
+          uri: lb://short-link-admin
+          predicates:
+            - Path=/api/admin/**
+        # 短链跳转请求 → 跳转服务
+        - id: short-link-api
+          uri: lb://short-link-api
+          predicates:
+            - Path=/s/**
+
+# JWT 鉴权配置（与 short-link-admin 签发密钥保持一致）
+short-link:
+  jwt:
+    secret: ${JWT_SECRET}
+    expire-hour: 72
+  # 免鉴权白名单（Ant 风格）
+  auth:
+    white-list:
+      - /s/**
+      - /api/admin/user/login
+      - /api/admin/user/register
+      - /actuator/**
+
+# 跳转路由限流阈值（QPS），保护高并发读核心链路
+short-link-gateway:
+  flow:
+    redirect-qps: 500
+
+logging:
+  level:
+    com.shortlink.gateway: info
