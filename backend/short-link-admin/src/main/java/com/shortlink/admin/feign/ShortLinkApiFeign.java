@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(
         name = "short-link-api",
         path = "/internal/cache",
-        fallback = ShortLinkApiFeignFallback.class)
+        fallbackFactory = ShortLinkApiFeignFallback.class)
 public interface ShortLinkApiFeign {
 
     /** 新短链创建后写入布隆过滤器 */

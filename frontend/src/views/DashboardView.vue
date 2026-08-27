@@ -144,7 +144,7 @@ function renderTrend() {
       textStyle: { color: '#4b5563', fontSize: 12 },
       axisPointer: { lineStyle: { color: '#c9d4f5' } }
     },
-    grid: { left: 44, right: 20, top: 28, bottom: 30 },
+    grid: { left: 52, right: 20, top: 28, bottom: 30 },
     xAxis: {
       type: 'category',
       boundaryGap: false,
@@ -157,7 +157,15 @@ function renderTrend() {
       type: 'value',
       minInterval: 1,
       splitLine: { lineStyle: { color: '#f0f2f7', type: 'dashed' } },
-      axisLabel: { color: '#9ca3af', fontSize: 11 }
+      axisLabel: {
+        color: '#9ca3af',
+        fontSize: 11,
+        formatter: (val: number) => {
+          if (val >= 10000) return `${Math.round(val / 10000)}w`
+          if (val >= 1000) return `${Math.round(val / 1000)}k`
+          return String(val)
+        }
+      }
     },
     series: [
       {
@@ -190,10 +198,27 @@ async function loadOverview() {
   }
 }
 
+function fillMissingDays(data: StatsTrendItem[], days: number): StatsTrendItem[] {
+  const map = new Map(data.map((i) => [i.statDate, i.visitCount]))
+  const result: StatsTrendItem[] = []
+  const today = new Date()
+  for (let i = days - 1; i >= 0; i--) {
+    const d = new Date(today)
+    d.setDate(d.getDate() - i)
+    const y = d.getFullYear()
+    const m = String(d.getMonth() + 1).padStart(2, '0')
+    const day = String(d.getDate()).padStart(2, '0')
+    const dateStr = `${y}-${m}-${day}`
+    result.push({ statDate: dateStr, visitCount: map.get(dateStr) ?? 0 })
+  }
+  return result
+}
+
 async function loadTrend() {
   trendLoading.value = true
   try {
-    trendList.value = await getStatsTrend(trendDays.value)
+    const raw = await getStatsTrend(trendDays.value)
+    trendList.value = fillMissingDays(raw, trendDays.value)
     renderTrend()
   } catch {
     /* 拦截器已提示 */

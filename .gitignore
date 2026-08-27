@@ -15,3 +15,7 @@ logs/
 # Environment
 .env
 .env.local
+
+# Local reference materials
+.trae-html-share-packages/
+resume-reference/
